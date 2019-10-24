@@ -14,10 +14,10 @@ class GamesCollection
   end
 
   def count_of_games_by_season
-    hash = {}
+    games_by_season = {}
     @games.each do |game|
-      hash[game.season] = game.game_id.length
+      games_by_season[game.season] = game.game_id.length
     end
-    hash
+    games_by_season
   end
 end
