@@ -14,10 +14,6 @@ class GamesCollection
   end
 
   def count_of_games_by_season
-    games_by_season = {}
-    @games.each do |game|
-      games_by_season[game.season] = game.game_id.length
-    end
-    games_by_season
+    @games.map {|game| games_by_season[game.season] = game.game_id.length}
   end
 end
