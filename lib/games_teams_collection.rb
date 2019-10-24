@@ -14,15 +14,11 @@ class GamesTeamsCollection
   end
 
   def total_home_games
-    @games_teams.count do |game_team|
-      game_team.hoa == 'home'
-    end
+    @games_teams.count {|game_team| game_team.hoa == 'home'}
   end
 
   def home_wins
-    @games_teams.count do |game_team|
-      game_team.hoa == 'home' && game_team.result == 'WIN'
-    end
+    @games_teams.count {|game_team| game_team.hoa == 'home' && game_team.result == 'WIN'}
   end
 
   def percentage_home_wins
@@ -30,19 +26,11 @@ class GamesTeamsCollection
   end
 
   def max_goals
-    count = []
-    @games_teams.each do |game_team|
-      count << game_team.goals.to_i
-    end
-    count.max
+    @games_teams.map {|game_team| game_team.goals.to_i}
   end
 
   def min_goals
-    count = []
-    @games_teams.each do |game_team|
-      count << game_team.goals.to_i
-    end
-    count.min
+    @games_teams.each {|game_team| game_team.goals.to_i}
   end
 
   def biggest_blowout
