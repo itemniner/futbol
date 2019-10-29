@@ -179,7 +179,7 @@ class GamesTeamsCollection
     end
   end
 
-  def list_of_games_of_team(team_id)
+  def list_of_games_of_team(team_id) # see 101 line
     find_by_in(team_id, "team_id", @games_teams)
   end
 
@@ -267,5 +267,9 @@ class GamesTeamsCollection
 
   def opponents_team_id(team_id)
     every_unique("team_id", all_opponent_games(team_id))
+  end
+#for most accurate team
+  def total_shots_taken_by_team(team_id)
+    list_of_games_of_team(team_id).sum { |game_team| game_team.shots.to_i }
   end
 end
