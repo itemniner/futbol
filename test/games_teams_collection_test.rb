@@ -240,6 +240,6 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_percentage_of_goals_to_shots_by_team
-    assert_equal 32, @games_teams_collection.percentage_of_goals_to_shots_by_team("6")
+    assert_equal 32.58, @games_teams_collection.percentage_of_goals_to_shots_by_team("6")
   end
 end
