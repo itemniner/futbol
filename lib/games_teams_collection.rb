@@ -272,4 +272,10 @@ class GamesTeamsCollection
   def total_shots_taken_by_team(team_id)
     list_of_games_of_team(team_id).sum { |game_team| game_team.shots.to_i }
   end
+
+  def percentage_of_goals_to_shots_by_team(team_id)
+    # require "pry"; binding.pry
+    total = (total_goals_of_team(team_id) / total_shots_taken_by_team(team_id).to_f)
+    (total * 100).round(0)
+  end
 end
