@@ -11,3 +11,5 @@ gem 'rake'
 group :test do
   gem 'simplecov', require: false
 end
+
+gem 'minitest-nyan-cat', group: :test

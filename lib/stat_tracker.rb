@@ -175,4 +175,12 @@ class StatTracker
   def least_accurate_team(season)
     name_of_team(all_team_ids_for_accurate_team(season).min_by { |team_id| @games_teams.percentage_of_goals_to_shots_by_team(team_id) })
   end
+  
+  def winningest_coach(season)
+    @games_teams.winningest_coach(@games.game_ids_in_season(season))
+  end
+
+  def worst_coach(season)
+    @games_teams.worst_coach(@games.game_ids_in_season(season))
+  end
 end

@@ -1,7 +1,7 @@
 require 'simplecov'
 SimpleCov.start
 require 'minitest/autorun'
-require 'minitest/pride'
+require 'minitest/nyan_cat'
 require 'csv'
 require 'mocha/minitest'
 require_relative '../lib/stat_tracker'

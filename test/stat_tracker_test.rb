@@ -109,6 +109,17 @@ class StatTrackerTest < Minitest::Test
     assert_equal "New England Revolution", @stat_tracker.best_fans
   end
 
+  def test_it_can_return_team_info_hash
+    expected = {
+      "abbreviation" => "ATL",
+      "franchise_id" => "23",
+      "link" => '/api/v1/teams/1',
+      "team_id" => "1",
+      "team_name" => "Atlanta United",
+    }
+    assert_equal expected, @stat_tracker.team_info("1")
+  end
+
   def test_it_can_find_names_of_teams_with_worst_fans
     # no such teams exist in fixture data, but 2 exist in real data
     assert_equal [], @stat_tracker.worst_fans
@@ -228,6 +239,7 @@ class StatTrackerTest < Minitest::Test
                     }
     assert_equal expected_hash, @stat_tracker.head_to_head("5")
   end
+
   #
   # def test_it_can_find_all_games_given_season_and_team_id
   #   assert_equal 0, @stat_tracker.all_games_given_season_and_team_id("20122013")
@@ -247,5 +259,17 @@ class StatTrackerTest < Minitest::Test
 
   def test_it_can_find_least_accurate_team
     assert_equal "Houston Dynamo", @stat_tracker.least_accurate_team("20122013")
+  end
+
+  def test_it_can_find_winningest_coach_in_season
+    game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    assert_equal "Adam Oates", @stat_tracker.winningest_coach("20122013")
+  end
+
+  def test_it_can_find_worst_coach_in_season
+    game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    assert_equal "John Tortorella", @stat_tracker.worst_coach("20122013")
   end
 end

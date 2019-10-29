@@ -242,4 +242,71 @@ class GamesTeamsCollectionTest < Minitest::Test
   def test_it_can_find_percentage_of_goals_to_shots_by_team
     assert_equal 32.58, @games_teams_collection.percentage_of_goals_to_shots_by_team("6")
   end
+  
+  def test_it_can_get_all_games_with_a_given_coach_in_given_ids
+    expected_array = [
+      @games_teams_collection.games_teams[91],
+      @games_teams_collection.games_teams[93],
+      @games_teams_collection.games_teams[94],
+      @games_teams_collection.games_teams[96]
+    ]
+    argument_array = [
+      "2012030131",
+      "2012030132",
+      "2012030133",
+      "2012030134"
+    ]
+    assert_equal expected_array, @games_teams_collection.all_coach_games_in_season("Adam Oates", argument_array)
+  end
+
+  def test_it_can_total_wins_of_given_coach_in_given_season
+    argument_array = [
+      "2012030131",
+      "2012030132",
+      "2012030133",
+      "2012030134"
+    ]
+  assert_equal 4, @games_teams_collection.total_wins_of_coach_in_season("Adam Oates", argument_array)
+  end
+
+  def test_it_can_total_games_with_coach_in_season
+    argument_array = [
+      "2012030131",
+      "2012030132",
+      "2012030133",
+      "2012030134"
+    ]
+    assert_equal 4, @games_teams_collection.total_coach_games_in_season("Adam Oates", argument_array)
+  end
+
+  def test_it_can_calculate_win_percentage_for_given_coach_in_given_season
+    argument_array = [
+      "2012030131",
+      "2012030132",
+      "2012030133",
+      "2012030134"
+    ]
+    assert_equal 1.00, @games_teams_collection.coach_win_percent_in_season("Adam Oates", argument_array)
+  end
+
+  def test_it_can_find_unique_coaches_in_given_season
+    expected_array = ["John Tortorella", "Adam Oates"]
+    argument_array = [
+                        "2012030131",
+                        "2012030132",
+                        "2012030133",
+                        "2012030134"
+                     ]
+    assert_equal expected_array, @games_teams_collection.unique_coaches_in_season(argument_array)
+  end
+
+  def test_it_can_find_winningest_coach_in_given_season
+    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    assert_equal "Adam Oates", @games_teams_collection.winningest_coach(arg)
+  end
+
+  def test_it_can_find_worst_coach_in_given_season
+    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    assert_equal "John Tortorella", @games_teams_collection.worst_coach(arg)
+  end
 end
