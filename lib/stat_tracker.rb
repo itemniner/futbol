@@ -159,4 +159,20 @@ class StatTracker
   def head_to_head(team_id)
     name_team_keys(@games.head_to_head(team_id))
   end
+
+  def all_game_given_the_season(season)
+    @games_teams.all_games_with_ids(@games.game_ids_in_season(season))
+  end
+
+  def all_team_ids_for_accurate_team(season)
+    @games_teams.every_unique("team_id", all_game_given_the_season(season))
+  end
+
+  def most_accurate_team(season)
+    name_of_team(all_team_ids_for_accurate_team(season).max_by { |team_id| @games_teams.percentage_of_goals_to_shots_by_team(team_id) })
+  end
+
+  def least_accurate_team(season)
+    name_of_team(all_team_ids_for_accurate_team(season).min_by { |team_id| @games_teams.percentage_of_goals_to_shots_by_team(team_id) })
+  end
 end
