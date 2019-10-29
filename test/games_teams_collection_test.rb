@@ -235,5 +235,7 @@ class GamesTeamsCollectionTest < Minitest::Test
     assert_equal ["3", "5"], @games_teams_collection.opponents_team_id("6")
   end
 
-
+  def test_it_can_find_all_shots_taken_by_team
+    assert_equal 76, @games_teams_collection.total_shots_taken_by_team("6")
+  end
 end
