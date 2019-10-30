@@ -295,5 +295,8 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_it_can_name_of_team_with_fewest_tackles_in_season
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    assert_equal "New England Revolution", @stat_tracker.fewest_tackles("20122013")
   end
 end
