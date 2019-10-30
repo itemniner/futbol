@@ -403,4 +403,28 @@ class GamesCollection
       record
     end
   end
+
+  def team_difference_in_win_percentage_by_season(team_id, season)
+    regular_season = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
+    post_season = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
+    regular_season - post_season
+  end
+
+  def all_unique_teams_in_season(season)
+    home_ids = every_unique("home_team_id", all_games_in_season(season))
+    away_ids = every_unique("away_team_id", all_games_in_season(season))
+    (home_ids + away_ids).uniq
+  end
+
+  def teams_with_season_decrease(season)
+    all_unique_teams_in_season(season).find_all do |team_id|
+      reg_percent = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
+      post_percent = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
+      reg_percent > post_percent
+    end
+  end
+
+  def biggest_bust(season)
+    # all_unique_teams_in_season(season).max_by do
+  end
 end
