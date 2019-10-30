@@ -437,4 +437,10 @@ class GamesCollection
       team_difference_in_win_percentage_by_season(team_id, season).abs
     end
   end
+
+  def biggest_surprise(season)
+    teams_with_season_increase(season).max_by do |team_id|
+      team_difference_in_win_percentage_by_season(team_id, season).abs
+    end
+  end
 end
