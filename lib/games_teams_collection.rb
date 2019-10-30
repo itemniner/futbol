@@ -267,15 +267,6 @@ class GamesTeamsCollection
     every_unique("team_id", all_opponent_games(team_id))
   end
 
-  def total_shots_taken_by_team(team_id)
-    list_of_games_of_team(team_id).sum { |game_team| game_team.shots.to_i }
-  end
-
-  def percentage_of_goals_to_shots_by_team(team_id)
-    total = (total_goals_of_team(team_id) / total_shots_taken_by_team(team_id).to_f)
-    (total * 100).round(2)
-  end
-
   def all_coach_games_in_season(coach, game_ids)
     all_games_with_ids(game_ids).find_all { |game_team| game_team.head_coach == coach }
   end
@@ -339,5 +330,17 @@ class GamesTeamsCollection
     unique_teams_in_season(game_ids).min_by do |team_id|
       total_team_tackles_in_season(team_id, game_ids)
     end
+  end
+
+  def total_shots_taken_by_team_in_season(team_id, game_ids)
+    all_games_of_team_in_season(team_id, game_ids).sum { |game_team| game_team.shots.to_i }
+  end
+
+  def total_goals_of_team_in_season(team_id, game_ids)
+    all_games_of_team_in_season(team_id, game_ids).sum { |game_team| game_team.goals.to_i }
+  end
+
+  def percentage_of_goals_to_shots_by_team(team_id, game_ids)
+    percent_of(total_goals_of_team_in_season(team_id, game_ids) / total_shots_taken_by_team_in_season(team_id, game_ids).to_f)
   end
 end
