@@ -311,30 +311,6 @@ class GamesTeamsCollectionTest < Minitest::Test
     assert_equal "John Tortorella", @games_teams_collection.worst_coach(arg)
   end
 
-  def test_it_can_list_all_teams_games_in_preseason
-    skip
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal "Team_1", @games_teams.all_team_games_in_preseason(arg, "Preseason")
-  end
-
-  def test_it_can_list_all_teams_games_in_postseason
-    skip
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal "Team_2", @games_teams.all_team_games_in_preseason(arg, "Postseason")
-  end
-
-  def test_it_can_count_all_teams_wins_in_preseason
-    skip
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal 0, @games_teams.total_preseason_wins_of_team_in_season(arg, "Preseason")
-  end
-
-  def test_it_can_count_all_teams_wins_in_postseason
-    skip
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal 0, @games_teams.total_postseason_wins_of_team_in_season(arg, "Postseason")
-  end
-
   def test_in_can_find_all_games_for_given_team_in_given_season
     arg = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
     expected = [
@@ -366,4 +342,7 @@ class GamesTeamsCollectionTest < Minitest::Test
     arg = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
     assert_equal "16", @games_teams_collection.fewest_tackles(arg)
   end
+
+  # Next step for biggest_bust and biggest_surprise: 2 arguments to pass in
+  # separate preseason & reg_season game_id arrays from Games via StatTracker
 end
