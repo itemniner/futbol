@@ -363,7 +363,7 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_percentage_of_goals_to_shots_by_team
-    skip
-    assert_equal 32.58, @games_teams_collection.percentage_of_goals_to_shots_by_team("6")
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal 21.21, @games_teams_collection.percentage_of_goals_to_shots_by_team("30", game_ids)
   end
 end
