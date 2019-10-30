@@ -246,6 +246,7 @@ class StatTrackerTest < Minitest::Test
   # end
 
   def test_it_can_find_total_shots_taken_by_team
+    skip
     assert_equal 0, @stat_tracker.total_shots_taken_by_team("3", "20122013")
   end
 
@@ -274,14 +275,25 @@ class StatTrackerTest < Minitest::Test
   end
   ##### in progress
   def test_it_can_tell_us_biggest_bust_in_season
+    skip
     game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
     @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
     assert_equal "Team_1", @stat_tracker.biggest_bust("20122013")
   end
   ##### in progress
   def test_it_can_tell_us_biggest_surprise_in_season
+    skip
     game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
     @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
     assert_equal "Team_2", @stat_tracker.biggest_surprise("20122013")
+  end
+
+  def test_it_can_name_of_team_with_most_tackles_in_season
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    assert_equal "Orlando City SC", @stat_tracker.most_tackles("20122013")
+  end
+
+  def test_it_can_name_of_team_with_fewest_tackles_in_season
   end
 end
