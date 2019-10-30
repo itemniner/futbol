@@ -525,7 +525,11 @@ class GamesCollectionTest < Minitest::Test
     assert_equal ["6", "3", "5", "17", "8", "9", "30", "19", "24", "2"], @games_collection.teams_with_season_increase("20122013")
   end
 
-  def test_it_can_find_team_with_biggest_difference_in_win_percent_between_types_in_season
+  def test_it_can_find_team_with_biggest_decrease_in_win_percent_between_types_in_season
     assert_equal "3", @games_collection.biggest_bust("20132014")
+  end
+
+  def test_it_can_find_team_with_biggest_increase_in_win_percent_between_types_in_season
+    assert_equal "16", @games_collection.biggest_surprise("20132014")
   end
 end
