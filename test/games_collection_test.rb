@@ -16,13 +16,7 @@ class GamesCollectionTest < Minitest::Test
   end
 
   def test_it_knows_the_number_of_games_in_each_season
-    expected = [
-      63,
-      4,
-      16,
-      16,
-      12
-    ]
+    expected = [63, 4, 16, 16, 12]
     assert_equal expected, @games_collection.number_of_games_in_each_season
   end
 
@@ -93,16 +87,15 @@ class GamesCollectionTest < Minitest::Test
   end
 
   def test_it_can_tell_us_each_unique_home_team_id
-    #this validates that we're getting a condensed list of teams
     assert_equal 22, @games_collection.home_teams.length
   end
 
   def test_it_can_tell_us_total_team_home_goals
-    assert_equal 12, @games_collection.total_home_goals("6")
+    assert_equal 12, @games_collection.total_home_goals_of_team("6")
   end
 
   def test_it_can_tell_us_total_team_home_games
-    assert_equal 5, @games_collection.total_home_games("6")
+    assert_equal 5, @games_collection.total_home_games_of_team("6")
   end
 
   def test_it_can_tell_us_each_unique_away_team_id
@@ -129,18 +122,7 @@ class GamesCollectionTest < Minitest::Test
     assert_equal "2", @games_collection.lowest_scoring_visitor
   end
 
-
-  # calculate: (total_wins_for_a_team_id / total_games_for_a_team_id)
-  # calculate win percentage for given_set_of_games
-  # get all games in a particular season (team_game_list)
-  # calculate win_percentage for a given_season for a team_id
-  # get list of unique seasons
-  # for each season, calcul;ate win percentage for a given team
-  # get highest
-  # get lowest
-
   def test_it_knows_all_the_games_per_teams
-
     expected = [
       @games_collection.games[39],
       @games_collection.games[40],
@@ -149,13 +131,7 @@ class GamesCollectionTest < Minitest::Test
       @games_collection.games[43],
       @games_collection.games[44]
     ]
-
     assert_equal expected, @games_collection.games_with_team("2").sort_by { |game| game.game_id}
-  end
-
-  def test_it_can_tell_away_win
-    assert_equal true, @games_collection.away_win?(@games_collection.games[3])
-    assert_equal false, @games_collection.away_win?(@games_collection.games[0])
   end
 
   def test_it_can_count_away_wins
@@ -167,11 +143,11 @@ class GamesCollectionTest < Minitest::Test
   end
 
   def test_it_can_count_total_team_wins
-    assert_equal 2, @games_collection.total_team_wins("2", "20122013")
+    assert_equal 2, @games_collection.total_team_wins_in_season("2", "20122013")
   end
 
   def test_it_can_calculate_win_percentage_for_a_team
-    assert_equal 0.33, @games_collection.team_win_percentage("2", "20122013")
+    assert_equal 0.33, @games_collection.team_win_percentage_in_season("2", "20122013")
   end
 
   def test_it_can_list_seasons
@@ -267,11 +243,11 @@ class GamesCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_the_home_goals_if_away_team
-    assert_equal 8, @games_collection.find_opponents_goals_if_away_team("2")
+    assert_equal 8, @games_collection.total_opponents_goals_if_away_team("2")
   end
 
   def test_it_can_find_the_away_goals_if_home_team
-    assert_equal 7, @games_collection.find_opponents_goals_if_home_team("2")
+    assert_equal 7, @games_collection.total_opponents_goals_if_home_team("2")
   end
 
   def test_it_can_get_total_opponents_goals
@@ -510,7 +486,7 @@ class GamesCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_difference_between_win_percentage_in_season_types_for_team
-    assert_equal -0.20, @games_collection.team_difference_in_win_percentage_by_season("8", "20122013")
+    assert_equal (-0.20), @games_collection.team_difference_in_win_percentage_by_season("8", "20122013")
   end
 
   def test_it_can_find_all_unique_teams_in_given_season
