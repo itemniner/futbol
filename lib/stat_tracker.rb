@@ -161,11 +161,11 @@ class StatTracker
   end
 
   def most_accurate_team(season)
-    name_of_team(all_team_ids_for_accurate_team(season).max_by { |team_id| @games_teams.percentage_of_goals_to_shots_by_team(team_id) })
+    name_of_team(@games_teams.most_accurate_team(@games.game_ids_in_season(season)))
   end
 
   def least_accurate_team(season)
-    name_of_team(all_team_ids_for_accurate_team(season).min_by { |team_id| @games_teams.percentage_of_goals_to_shots_by_team(team_id) })
+    name_of_team(@games_teams.least_accurate_team(@games.game_ids_in_season(season)))
   end
 
   def winningest_coach(season)
