@@ -275,7 +275,7 @@ class GamesTeamsCollection
     total = (total_goals_of_team(team_id) / total_shots_taken_by_team(team_id).to_f)
     (total * 100).round(2)
   end
-  
+
   def all_coach_games_in_season(coach, game_ids)
     all_games_with_ids(game_ids).find_all { |game_team| game_team.head_coach == coach }
   end
@@ -337,6 +337,36 @@ class GamesTeamsCollection
   def total_postseason_wins_of_team_in_season(team, game_ids)
     all_team_games_in_season(team, game_ids).count do |game|
       game.result == "WIN" && game.type == "Postseason"
+    end
+  end
+
+  def all_games_of_team_in_season(team_id, game_ids)
+    all_games_with_ids(game_ids).select do |game|
+      game.team_id == team_id
+    end
+  end
+
+  def total_team_tackles_in_season(team_id, game_ids)
+    all_games_of_team_in_season(team_id, game_ids).sum do |game|
+      game.tackles.to_i
+    end
+  end
+
+  def unique_teams_in_season(game_ids)
+    all_games_with_ids(game_ids).map do |game|
+      game.team_id
+    end.uniq
+  end
+
+  def most_tackles(game_ids)
+    unique_teams_in_season(game_ids).max_by do |team_id|
+      total_team_tackles_in_season(team_id, game_ids)
+    end
+  end
+
+  def fewest_tackles(game_ids)
+    unique_teams_in_season(game_ids).min_by do |team_id|
+      total_team_tackles_in_season(team_id, game_ids)
     end
   end
 end
