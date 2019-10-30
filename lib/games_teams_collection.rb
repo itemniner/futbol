@@ -115,7 +115,7 @@ class GamesTeamsCollection
 
   # Helper method designed to be reusable; consider moving to a stats module
   def percent_of(numerator, denominator)
-    ((numerator / denominator.to_f) * 100).round(2)
+    ((numerator / (denominator.to_f.nonzero? || 1)) * 100).round(2)
   end
 
   # Helper method
