@@ -1,7 +1,7 @@
 require_relative 'game'
 require 'csv'
-require './module/uniqable'
-require './module/totalable'
+require_relative '../module/uniqable'
+require_relative '../module/totalable'
 
 class GamesCollection
   include Uniqable
@@ -178,7 +178,7 @@ class GamesCollection
     find_by_in(team_id, "away_team_id", @games)
   end
 
-  # def total_away_games(team)
+  # def total_away_games_team(team)
   #   all_away_games_of_team(team).count
   # end
 
@@ -187,7 +187,7 @@ class GamesCollection
   # end
 
   def average_away_score_of_team(team_id)
-    total_away_goals(team_id) / total_away_games(team_id).to_f
+    total_away_goals(team_id) / total_away_games_team(team_id).to_f
   end
 
   def games_with_team(team_id)
@@ -226,14 +226,14 @@ class GamesCollection
   #   end
   # end
 
-  # def total_home_wins(team_id, season)
+  # def total_home_wins_in_season(team_id, season)
   #   home_games_in_season(team_id, season).count do |game|
   #     home_win?(game)
   #   end
   # end
 
   # def total_team_wins(team_id, season)
-  #   total_home_wins(team_id, season) + total_away_wins(team_id, season)
+  #   total_home_wins_in_season(team_id, season) + total_away_wins(team_id, season)
   # end
 
   def team_win_percentage(team_id, season)

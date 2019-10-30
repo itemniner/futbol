@@ -3,36 +3,68 @@ module Totalable
     games.sum { |game| goals(game) }
   end
 
+  def total_goals_of_team(team_id)
+    list_of_games_of_team(team_id).sum { |game_team| game_team.goals.to_i }
+  end
+
+  def total_goals_of_opponents(team_id)
+    all_opponent_games(team_id).sum { |game_team| game_team.goals.to_i }
+  end
+
   def total_home_games(team)
     all_home_games_of_team(team).count
+  end
+
+  def total_home_games
+    @games_teams.count do |game_team|
+      game_team.hoa == 'home'
+    end
   end
 
   def total_home_goals(team)
     all_home_games_of_team(team).sum { |game| game.home_goals.to_i }
   end
 
-  def total_away_games(team)
+  def total_away_games_team(team)
     all_away_games_of_team(team).count
+  end
+
+  def total_away_games
+    @games_teams.count do |game_team|
+      game_team.hoa == 'away'
+    end
   end
 
   def total_away_goals(team)
     all_away_games_of_team(team).sum { |game| game.away_goals.to_i }
   end
 
-  def total_away_wins(team_id, season)
+  def total_away_wins_in_season(team_id, season)
     away_games_in_season(team_id, season).count do |game|
       away_win?(game)
     end
   end
 
-  def total_home_wins(team_id, season)
+  def total_away_wins
+    @games_teams.count do |game_team|
+      game_team.hoa == 'away' && game_team.result == 'WIN'
+    end
+  end
+
+  def total_home_wins_in_season(team_id, season)
     home_games_in_season(team_id, season).count do |game|
       home_win?(game)
     end
   end
 
+  def total_home_wins
+    @games_teams.count do |game_team|
+      game_team.hoa == 'home' && game_team.result == 'WIN'
+    end
+  end
+
   def total_team_wins(team_id, season)
-    total_home_wins(team_id, season) + total_away_wins(team_id, season)
+    total_home_wins_in_season(team_id, season) + total_away_wins_in_season(team_id, season)
   end
 
   def total_non_tie_games(team_id, season)
@@ -79,30 +111,6 @@ module Totalable
     games_between(team_id, team_opponent).length
   end
 
-  def total_home_games
-    @games_teams.count do |game_team|
-      game_team.hoa == 'home'
-    end
-  end
-
-  def total_home_wins
-    @games_teams.count do |game_team|
-      game_team.hoa == 'home' && game_team.result == 'WIN'
-    end
-  end
-
-  def total_away_games
-    @games_teams.count do |game_team|
-      game_team.hoa == 'away'
-    end
-  end
-
-  def total_away_wins
-    @games_teams.count do |game_team|
-      game_team.hoa == 'away' && game_team.result == 'WIN'
-    end
-  end
-
   def total_ties
     @games_teams.count do |game_team|
       game_team.result == 'TIE'
@@ -121,13 +129,6 @@ module Totalable
     games_with_team(team_id).count { |game_team| game_team.result == "WIN" }
   end
 
-  def total_goals_of_team(team_id)
-    list_of_games_of_team(team_id).sum { |game_team| game_team.goals.to_i }
-  end
-
-  def total_goals_of_opponents(team_id)
-    all_opponent_games(team_id).sum { |game_team| game_team.goals.to_i }
-  end
 
   def total_shots_taken_by_team(team_id)
     list_of_games_of_team(team_id).sum { |game_team| game_team.shots.to_i }

@@ -1,7 +1,7 @@
 require_relative 'game_team'
 require 'csv'
-require './module/uniqable'
-require './module/totalable'
+require_relative '../module/uniqable'
+require_relative '../module/totalable'
 
 class GamesTeamsCollection
   include Uniqable
