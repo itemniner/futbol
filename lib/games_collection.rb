@@ -1,7 +1,11 @@
 require_relative 'game'
 require 'csv'
+require_relative '../module/uniqable'
+require_relative '../module/totalable'
 
 class GamesCollection
+  include Uniqable
+  include Totalable
   attr_reader :games
 
   def initialize(games_path)
@@ -118,20 +122,8 @@ class GamesCollection
     collection.map { |element| element.send(attribute) }
   end
 
-  def every_unique(attribute, collection)
-    every(attribute, collection).uniq
-  end
-
-  def total_unique(attribute, collection)
-    every_unique(attribute, collection).length
-  end
-
   def goals(game)
     game.home_goals.to_i + game.away_goals.to_i
-  end
-
-  def total_goals(games)
-    games.sum { |game| goals(game) }
   end
 
   def average_goals_in(games)
@@ -158,10 +150,6 @@ class GamesCollection
     all_home_games_of_team(team).count
   end
 
-  def total_home_goals(team)
-    all_home_games_of_team(team).sum { |game| game.home_goals.to_i }
-  end
-
   def average_home_score_of_team(team_id)
     total_home_goals(team_id) / total_home_games(team_id).to_f
   end
@@ -174,16 +162,8 @@ class GamesCollection
     find_by_in(team_id, "away_team_id", @games)
   end
 
-  def total_away_games(team)
-    all_away_games_of_team(team).count
-  end
-
-  def total_away_goals(team)
-    all_away_games_of_team(team).sum { |game| game.away_goals.to_i }
-  end
-
   def average_away_score_of_team(team_id)
-    total_away_goals(team_id) / total_away_games(team_id).to_f
+    total_away_goals(team_id) / total_away_games_team(team_id).to_f
   end
 
   def games_with_team(team_id)
@@ -216,34 +196,8 @@ class GamesCollection
     end
   end
 
-  def total_away_wins(team_id, season)
-    away_games_in_season(team_id, season).count do |game|
-      away_win?(game)
-    end
-  end
-
-  def total_home_wins(team_id, season)
-    home_games_in_season(team_id, season).count do |game|
-      home_win?(game)
-    end
-  end
-
-  def total_team_wins(team_id, season)
-    total_home_wins(team_id, season) + total_away_wins(team_id, season)
-  end
-
   def team_win_percentage(team_id, season)
     (total_team_wins(team_id, season) / games_with_team_in_season(team_id, season).length.to_f).round(2)
-  end
-
-  def total_non_tie_games(team_id, season)
-    games_with_team_in_season(team_id, season).reject do |game|
-      game.away_goals == game.home_goals
-    end.length
-  end
-
-  def unique_seasons
-    @games.map {|game| game.season}.uniq
   end
 
   def team_seasons(team_id)
@@ -270,18 +224,6 @@ class GamesCollection
 
   def team_win_percentage_in_season_and_type(team_id, season, type)
     (team_wins_in_season_and_type(team_id, season, type) / team_games_denominator(team_id, season, type)).round(2)
-  end
-
-  def total_team_goals_in_season_and_type(team_id, season, type)
-    team_games_in_season_and_type(team_id, season, type).sum do |game|
-      team_id == game.home_team_id ? game.home_goals.to_i : game.away_goals.to_i
-    end
-  end
-
-  def total_opponent_goals_in_season_and_type(team_id, season, type)
-    team_games_in_season_and_type(team_id, season, type).sum do |game|
-      team_id == game.home_team_id ? game.away_goals.to_i : game.home_goals.to_i
-    end
   end
 
   def avg_team_goals_in_season_and_type(team_id, season, type)
@@ -325,24 +267,8 @@ class GamesCollection
     end
   end
 
-  def total_opponent_goals(team_id)
-    find_opponents_goals_if_home_team(team_id) + find_opponents_goals_if_away_team(team_id)
-  end
-
   def average_goals_of_opponent(team_id)
     total_opponent_goals(team_id) / games_with_team(team_id).length.to_f
-  end
-
-  def total_wins_across_seasons(team_id)
-    unique_seasons.sum do |season|
-      games_with_team_in_season(team_id, season) != nil ? total_team_wins(team_id, season) : 0
-    end
-  end
-
-  def total_team_ties_in_season(team_id, season)
-    games_with_team_in_season(team_id, season).count do |game|
-      game.away_goals == game.home_goals
-    end
   end
 
   def game_ids_in_season(season)
@@ -367,16 +293,6 @@ class GamesCollection
     games_with_team(team_id).find_all do |game|
       team_opponent == game.away_team_id || team_opponent == game.home_team_id
     end
-  end
-
-  def total_wins_against(team_id, team_opponent)
-    games_between(team_id, team_opponent).count do |game|
-      team_id == game.home_team_id ? home_win?(game) : away_win?(game)
-    end
-  end
-
-  def total_games_between(team_id, team_opponent)
-    games_between(team_id, team_opponent).length
   end
 
   def win_percentage_against(team_id, team_opponent)

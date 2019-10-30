@@ -1,4 +1,5 @@
 require_relative 'test_helper'
+
 class GamesCollectionTest < Minitest::Test
 
   def setup
@@ -158,11 +159,11 @@ class GamesCollectionTest < Minitest::Test
   end
 
   def test_it_can_count_away_wins
-    assert_equal 0, @games_collection.total_away_wins("2", "20122013")
+    assert_equal 0, @games_collection.total_away_wins_in_season("2", "20122013")
   end
 
   def test_it_can_count_home_wins
-    assert_equal 2, @games_collection.total_home_wins("2", "20122013")
+    assert_equal 2, @games_collection.total_home_wins_in_season("2", "20122013")
   end
 
   def test_it_can_count_total_team_wins
