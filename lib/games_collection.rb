@@ -424,7 +424,17 @@ class GamesCollection
     end
   end
 
+  def teams_with_season_increase(season)
+    all_unique_teams_in_season(season).find_all do |team_id|
+      reg_percent = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
+      post_percent = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
+      reg_percent < post_percent
+    end
+  end
+
   def biggest_bust(season)
-    # all_unique_teams_in_season(season).max_by do
+    teams_with_season_decrease(season).max_by do |team_id|
+      team_difference_in_win_percentage_by_season(team_id, season).abs
+    end
   end
 end
