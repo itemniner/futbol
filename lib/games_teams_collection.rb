@@ -16,6 +16,86 @@ class GamesTeamsCollection
     objects
   end
 
+  def most_goals_scored(team_id)
+    list_of_games_of_team(team_id).map(&:goals).max.to_i
+  end
+
+  def fewest_goals_scored(team_id)
+    list_of_games_of_team(team_id).map(&:goals).min.to_i
+  end
+
+  def biggest_team_blowout(team_id)
+    difference = []
+    team_goals(team_id).each_with_index do |team_goal, index|
+      difference << team_goal - opponents_goals(team_id)[index]
+    end
+    difference.map { |number| number.abs }.max
+  end
+
+  def worst_loss(team_id)
+    difference = []
+    team_goals(team_id).each_with_index do |team_goal, index|
+      difference << team_goal - opponents_goals(team_id)[index]
+    end
+    difference.map { |number| number }.max
+  end
+
+  def best_offense
+    all_team_ids.max_by { |team_id| average_goals_for_team(team_id) }
+  end
+
+  def worst_offense
+    all_team_ids.min_by { |team_id| average_goals_for_team(team_id) }
+  end
+
+  def best_defense
+    all_team_ids.min_by { |team_id| average_goals_of_opponents(team_id) }
+  end
+
+  def worst_defense
+    all_team_ids.max_by { |team_id| average_goals_of_opponents(team_id) }
+  end
+
+  def winningest_team
+    all_team_ids.max_by { |team_id| team_win_percentage(team_id) }
+  end
+
+  def best_fans
+    all_team_ids.max_by do |team_id|
+      (team_home_win_percentage(team_id) - team_away_win_percentage(team_id)).abs
+    end
+  end
+
+  def worst_fans
+    all_team_ids.find_all do |team_id|
+      team_home_win_percentage(team_id) < team_away_win_percentage(team_id)
+    end
+  end
+
+  def biggest_blowout
+    difference = []
+    number_of_wins.each do |wins|
+      number_of_losses.each do |losses|
+        difference << wins - losses
+      end
+    end
+    difference.max
+  end
+
+  def percentage_home_wins
+    (total_home_wins / total_home_games.to_f).round(2)
+  end
+
+  def percentage_visitor_wins
+    (total_away_wins / total_away_games.to_f).round(2)
+  end
+
+  def percentage_ties
+    (total_ties.to_f / @games_teams.count).round(2)
+  end
+
+  "----------------------------SUPPORT_METHODS----------------------------------"
+
   def total_home_games
     @games_teams.count do |game_team|
       game_team.hoa == 'home'
@@ -26,10 +106,6 @@ class GamesTeamsCollection
     @games_teams.count do |game_team|
       game_team.hoa == 'home' && game_team.result == 'WIN'
     end
-  end
-
-  def percentage_home_wins
-    (total_home_wins / total_home_games.to_f).round(2)
   end
 
   def total_away_games
@@ -44,18 +120,10 @@ class GamesTeamsCollection
     end
   end
 
-  def percentage_visitor_wins
-    (total_away_wins / total_away_games.to_f).round(2)
-  end
-
   def total_ties
     @games_teams.count do |game_team|
       game_team.result == 'TIE'
     end
-  end
-
-  def percentage_ties
-    (total_ties.to_f / @games_teams.count).round(2)
   end
 
   def number_of_wins
@@ -78,105 +146,64 @@ class GamesTeamsCollection
     losser_goals
   end
 
-  def biggest_blowout
-    difference = []
-    number_of_wins.each do |wins|
-      number_of_losses.each do |losses|
-        difference << wins - losses
-      end
-    end
-    difference.max
-  end
-
-  # Helper method designed to be reusable; consider moving to a parent Collection class
   def find_by_in(element, attribute, collection)
     collection.find_all { |member| member.send(attribute) == element }
   end
 
-  # Helper method designed to be reusable; consider moving to a parent Collection class
   def total_found_by_in(element, attribute, collection)
     find_by_in(element, attribute, collection).length
   end
 
-  # Helper method see 182
   def games_with_team(team_id)
     find_by_in(team_id, "team_id", @games_teams)
   end
 
-  # Helper method
   def total_games_with_team(team_id)
     total_found_by_in(team_id, "team_id", @games_teams)
   end
 
-  # Helper method
   def total_wins_of_team(team_id)
     games_with_team(team_id).count { |game_team| game_team.result == "WIN" }
   end
 
-  # Helper method designed to be reusable; consider moving to a stats module
   def percent_of(numerator, denominator)
     ((numerator / (denominator.to_f.nonzero? || 1)) * 100).round(2)
   end
 
-  # Helper method
   def team_win_percentage(team_id)
     percent_of(total_wins_of_team(team_id), total_games_with_team(team_id))
   end
 
-  # Helper method designed to be reusable; consider moving to a module
   def every(attribute, collection)
     collection.map { |element| element.send(attribute) }
   end
 
-  # Helper method designed to be reusable; consider moving to a module
   def every_unique(attribute, collection)
     every(attribute, collection).uniq
   end
 
-  # Helper method
   def all_team_ids
     every_unique("team_id", @games_teams)
   end
 
-  def winningest_team
-    all_team_ids.max_by { |team_id| team_win_percentage(team_id) }
-  end
-
-  # Helper method
   def away_games_of_team(team_id)
     find_by_in(team_id, "team_id", find_by_in("away", "hoa", @games_teams))
   end
 
-  # Helper method
   def home_games_of_team(team_id)
     find_by_in(team_id, "team_id", find_by_in("home", "hoa", @games_teams))
   end
 
-  # Helper method
   def number_of_wins_in(collection)
     collection.count { |game_team| game_team.result == "WIN" }
   end
 
-  # Helper method
   def team_home_win_percentage(team_id)
     percent_of(number_of_wins_in(home_games_of_team(team_id)), home_games_of_team(team_id).length)
   end
 
-  # Helper method
   def team_away_win_percentage(team_id)
     percent_of(number_of_wins_in(away_games_of_team(team_id)), home_games_of_team(team_id).length)
-  end
-
-  def best_fans
-    all_team_ids.max_by do |team_id|
-      (team_home_win_percentage(team_id) - team_away_win_percentage(team_id)).abs
-    end
-  end
-
-  def worst_fans
-    all_team_ids.find_all do |team_id|
-      team_home_win_percentage(team_id) < team_away_win_percentage(team_id)
-    end
   end
 
   def list_of_games_of_team(team_id) # see 101 line
@@ -189,14 +216,6 @@ class GamesTeamsCollection
 
   def average_goals_for_team(team_id)
     (total_goals_of_team(team_id) / total_games_with_team(team_id).to_f).round(2)
-  end
-
-  def best_offense
-    all_team_ids.max_by { |team_id| average_goals_for_team(team_id) }
-  end
-
-  def worst_offense
-    all_team_ids.min_by { |team_id| average_goals_for_team(team_id) }
   end
 
   def opponent_object(game_team_selected)
@@ -219,44 +238,12 @@ class GamesTeamsCollection
     (total_goals_of_opponents(team_id) / all_opponent_games(team_id).length.to_f).round(2)
   end
 
-  def best_defense
-    all_team_ids.min_by { |team_id| average_goals_of_opponents(team_id) }
-  end
-
-  def worst_defense
-    all_team_ids.max_by { |team_id| average_goals_of_opponents(team_id) }
-  end
-
   def team_goals(team_id)
     all_opponent_games(team_id).map { |game_team| game_team.goals.to_i }
   end
 
   def opponents_goals(team_id)
     list_of_games_of_team(team_id).map { |team_game| team_game.goals.to_i }
-  end
-
-  def biggest_team_blowout(team_id)
-    difference = []
-    team_goals(team_id).each_with_index do |team_goal, index|
-      difference << team_goal - opponents_goals(team_id)[index]
-    end
-    difference.map { |number| number.abs }.max
-  end
-
-  def most_goals_scored(team_id)
-    list_of_games_of_team(team_id).map(&:goals).max.to_i
-  end
-
-  def fewest_goals_scored(team_id)
-    list_of_games_of_team(team_id).map(&:goals).min.to_i
-  end
-
-  def worst_loss(team_id)
-    difference = []
-    team_goals(team_id).each_with_index do |team_goal, index|
-      difference << team_goal - opponents_goals(team_id)[index]
-    end
-    difference.map { |number| number }.max
   end
 
   def all_games_with_ids(game_ids)
@@ -306,7 +293,6 @@ class GamesTeamsCollection
     unique_coaches_in_season(game_ids).min_by { |coach| coach_win_percent_in_season(coach, game_ids) }
   end
 
-  # Helper method - DELETE
   def all_team_ids
     every_unique("team_id", @games_teams)
   end
