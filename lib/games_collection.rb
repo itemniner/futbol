@@ -1,7 +1,9 @@
 require_relative 'game'
 require 'csv'
+require './module/uniqable'
 
 class GamesCollection
+  include Uniqable
   attr_reader :games
 
   def initialize(games_path)
@@ -118,13 +120,13 @@ class GamesCollection
     collection.map { |element| element.send(attribute) }
   end
 
-  def every_unique(attribute, collection)
-    every(attribute, collection).uniq
-  end
+  # def every_unique(attribute, collection)
+  #   every(attribute, collection).uniq
+  # end
 
-  def total_unique(attribute, collection)
-    every_unique(attribute, collection).length
-  end
+  # def total_unique(attribute, collection)
+  #   every_unique(attribute, collection).length
+  # end
 
   def goals(game)
     game.home_goals.to_i + game.away_goals.to_i
@@ -242,9 +244,9 @@ class GamesCollection
     end.length
   end
 
-  def unique_seasons
-    @games.map {|game| game.season}.uniq
-  end
+  # def unique_seasons
+  #   @games.map {|game| game.season}.uniq
+  # end
 
   def team_seasons(team_id)
     games_with_team(team_id).map do |game|

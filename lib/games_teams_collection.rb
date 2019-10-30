@@ -1,7 +1,9 @@
 require_relative 'game_team'
 require 'csv'
+require './module/uniqable'
 
 class GamesTeamsCollection
+  include Uniqable
   attr_reader :games_teams
 
   def initialize(games_teams_path)
@@ -178,9 +180,9 @@ class GamesTeamsCollection
     collection.map { |element| element.send(attribute) }
   end
 
-  def every_unique(attribute, collection)
-    every(attribute, collection).uniq
-  end
+  # def every_unique(attribute, collection)
+  #   every(attribute, collection).uniq
+  # end
 
   def all_team_ids
     every_unique("team_id", @games_teams)
@@ -281,9 +283,9 @@ class GamesTeamsCollection
     (total_wins_of_coach_in_season(coach, game_ids) / total_coach_games_in_season(coach, game_ids).to_f).round(2)
   end
 
-  def unique_coaches_in_season(game_ids)
-    all_games_with_ids(game_ids).map { |game| game.head_coach }.uniq
-  end
+  # def unique_coaches_in_season(game_ids)
+  #   all_games_with_ids(game_ids).map { |game| game.head_coach }.uniq
+  # end
 
   def winningest_coach(game_ids)
     unique_coaches_in_season(game_ids).max_by { |coach| coach_win_percent_in_season(coach, game_ids) }
@@ -309,11 +311,11 @@ class GamesTeamsCollection
     end
   end
 
-  def unique_teams_in_season(game_ids)
-    all_games_with_ids(game_ids).map do |game|
-      game.team_id
-    end.uniq
-  end
+  # def unique_teams_in_season(game_ids)
+  #   all_games_with_ids(game_ids).map do |game|
+  #     game.team_id
+  #   end.uniq
+  # end
 
   def most_tackles(game_ids)
     unique_teams_in_season(game_ids).max_by do |team_id|
