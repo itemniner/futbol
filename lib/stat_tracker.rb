@@ -185,11 +185,11 @@ class StatTracker
   end
 
   def biggest_bust(season)
-    name_of_team(@games_teams.biggest_bust(@games.game_ids_in_season_and_type(season, "Regular Season"),@games.game_ids_in_season_and_type(season, "Postseason")))
+    name_of_team(@games.biggest_bust(season))
   end
 
   def biggest_surprise(season)
-    name_of_team(@games_teams.biggest_surprise(@games.game_ids_in_season_and_type(season, "Regular Season"),@games.game_ids_in_season_and_type(season, "Postseason")))
+    name_of_team(@games.biggest_surprise(season))
   end
 
   def most_tackles(season)
