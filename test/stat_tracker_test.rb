@@ -239,23 +239,17 @@ class StatTrackerTest < Minitest::Test
     assert_equal expected_hash, @stat_tracker.head_to_head("5")
   end
 
-  def test_it_can_find_total_shots_taken_by_team
-    skip
-    assert_equal 0, @stat_tracker.total_shots_taken_by_team("3", "20122013")
-  end
-
-  def test_it_can_get_all_games_in_games_teams_given_season
-    assert_equal 126, @stat_tracker.all_game_given_the_season("20122013").length
-  end
-
   def test_it_can_find_most_accurate_team
-    skip
-    assert_equal "New York City FC", @stat_tracker.most_accurate_team("20122013")
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    @stat_tracker.games_teams.expects(:most_accurate_team).returns("16")
+    assert_equal "New England Revolution", @stat_tracker.most_accurate_team("20122013")
   end
 
   def test_it_can_find_least_accurate_team
-    skip
-    assert_equal "Montreal Impact", @stat_tracker.least_accurate_team("20122013")
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    assert_equal "Orlando City SC", @stat_tracker.least_accurate_team("20122013")
   end
 
   def test_it_can_find_winningest_coach_in_season
@@ -270,20 +264,12 @@ class StatTrackerTest < Minitest::Test
     assert_equal "John Tortorella", @stat_tracker.worst_coach("20122013")
   end
 
-  ##### in progress
   def test_it_can_tell_us_biggest_bust_in_season
-    skip
-    game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
-    assert_equal "Team_1", @stat_tracker.biggest_bust("20122013")
+    assert_equal "Houston Dynamo", @stat_tracker.biggest_bust("20132014")
   end
 
-  ##### in progress
   def test_it_can_tell_us_biggest_surprise_in_season
-    skip
-    game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
-    assert_equal "Team_2", @stat_tracker.biggest_surprise("20122013")
+    assert_equal "New England Revolution", @stat_tracker.biggest_surprise("20132014")
   end
 
   def test_it_can_name_of_team_with_most_tackles_in_season

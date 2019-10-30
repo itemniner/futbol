@@ -382,4 +382,63 @@ class GamesCollection
   def win_percentage_against(team_id, team_opponent)
     (total_wins_against(team_id, team_opponent) / total_games_between(team_id, team_opponent).to_f).round(2)
   end
+
+  def favorite_opponent(team_id)
+    team_opponents(team_id).min_by do |team_opponent|
+      win_percentage_against(team_opponent, team_id)
+    end
+  end
+
+  def rival(team_id)
+    team_opponents(team_id).max_by do |team_opponent|
+      win_percentage_against(team_opponent, team_id)
+    end
+  end
+
+  def head_to_head(team_id)
+    team_opponents(team_id).reduce({}) do |record, team_opponent|
+      record[team_opponent] = win_percentage_against(team_id, team_opponent)
+      record
+    end
+  end
+
+  def team_difference_in_win_percentage_by_season(team_id, season)
+    regular_season = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
+    post_season = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
+    regular_season - post_season
+  end
+
+  def all_unique_teams_in_season(season)
+    home_ids = every_unique("home_team_id", all_games_in_season(season))
+    away_ids = every_unique("away_team_id", all_games_in_season(season))
+    (home_ids + away_ids).uniq
+  end
+
+  def teams_with_season_decrease(season)
+    all_unique_teams_in_season(season).find_all do |team_id|
+      reg_percent = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
+      post_percent = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
+      reg_percent > post_percent
+    end
+  end
+
+  def teams_with_season_increase(season)
+    all_unique_teams_in_season(season).find_all do |team_id|
+      reg_percent = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
+      post_percent = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
+      reg_percent < post_percent
+    end
+  end
+
+  def biggest_bust(season)
+    teams_with_season_decrease(season).max_by do |team_id|
+      team_difference_in_win_percentage_by_season(team_id, season).abs
+    end
+  end
+
+  def biggest_surprise(season)
+    teams_with_season_increase(season).max_by do |team_id|
+      team_difference_in_win_percentage_by_season(team_id, season).abs
+    end
+  end
 end

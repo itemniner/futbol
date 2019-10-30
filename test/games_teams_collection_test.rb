@@ -253,15 +253,6 @@ class GamesTeamsCollectionTest < Minitest::Test
     assert_equal ["3", "5"], @games_teams_collection.opponents_team_id("6")
   end
 
-  def test_it_can_find_all_shots_taken_by_team
-    assert_equal 76, @games_teams_collection.total_shots_taken_by_team("6")
-  end
-
-  def test_it_can_find_percentage_of_goals_to_shots_by_team
-    skip
-    assert_equal 32.58, @games_teams_collection.percentage_of_goals_to_shots_by_team("6")
-  end
-
   def test_it_can_get_all_games_with_a_given_coach_in_given_ids
     expected_array = [
       @games_teams_collection.games_teams[91],
@@ -361,6 +352,28 @@ class GamesTeamsCollectionTest < Minitest::Test
     assert_equal "16", @games_teams_collection.fewest_tackles(arg)
   end
 
-  # Next step for biggest_bust and biggest_surprise: 2 arguments to pass in
-  # separate preseason & reg_season game_id arrays from Games via StatTracker
+  def test_it_can_find_all_shots_taken_by_team_in_season
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal 33, @games_teams_collection.total_shots_taken_by_team_in_season("30", game_ids)
+  end
+
+  def test_it_can_find_total_goals_of_team_in_season
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal 7, @games_teams_collection.total_goals_of_team_in_season("30", game_ids)
+  end
+
+  def test_it_can_find_percentage_of_goals_to_shots_by_team
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal 21.21, @games_teams_collection.percentage_of_goals_to_shots_by_team("30", game_ids)
+  end
+
+  def test_it_can_find_team_with_highest_goals_to_shots_percentage_aka_most_accurate_team
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal "16", @games_teams_collection.most_accurate_team(game_ids)
+  end
+
+  def test_it_can_find_team_with_lowest_goals_to_shots_percentage_aka_most_accurate_team
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal "30", @games_teams_collection.least_accurate_team(game_ids)
+  end
 end
