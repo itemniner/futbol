@@ -183,4 +183,12 @@ class StatTracker
   def worst_coach(season)
     @games_teams.worst_coach(@games.game_ids_in_season(season))
   end
+
+  def biggest_bust(season)
+    name_of_team(@games_teams.biggest_bust(@games.game_ids_in_season_and_type(season, "Regular Season"),@games.game_ids_in_season_and_type(season, "Postseason"))
+  end
+
+  def biggest_surprise(season)
+    name_of_team(@games_teams.biggest_surprise(@games.game_ids_in_season_and_type(season, "Regular Season"),@games.game_ids_in_season_and_type(season, "Postseason"))
+  end
 end

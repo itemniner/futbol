@@ -305,4 +305,38 @@ class GamesTeamsCollection
   def worst_coach(game_ids)
     unique_coaches_in_season(game_ids).min_by { |coach| coach_win_percent_in_season(coach, game_ids) }
   end
+
+  # Helper method - DELETE
+  def all_team_ids
+    every_unique("team_id", @games_teams)
+  end
+
+  # Helper method - DELETE (all_games_with_ids)
+  def all_games_in_season(game_ids)
+    @games_teams.find_all { |game_team| game_ids.include?(game_team.game_id) }
+  end
+
+  def all_team_games_in_preseason(team, game_ids)
+    all_games_with_ids(game_ids).find_all do |game_team|
+      game_team.team_id == team && game.type == "Preseason"
+    end
+  end
+
+  def all_team_games_in_postseason(team, game_ids)
+    all_games_with_ids(game_ids).find_all do |game_team|
+      game_team.team_id == team && game.type == "Postseason"
+    end
+  end
+
+  def total_preseason_wins_of_team_in_season(team, game_ids)
+    all_team_games_in_season(team, game_ids).count do |game|
+      game.result == "WIN" && game.type == "Preseason"
+    end
+  end
+
+  def total_postseason_wins_of_team_in_season(team, game_ids)
+    all_team_games_in_season(team, game_ids).count do |game|
+      game.result == "WIN" && game.type == "Postseason"
+    end
+  end
 end

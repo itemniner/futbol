@@ -309,4 +309,24 @@ class GamesTeamsCollectionTest < Minitest::Test
     arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
     assert_equal "John Tortorella", @games_teams_collection.worst_coach(arg)
   end
+
+  def test_it_can_list_all_teams_games_in_preseason
+    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    assert_equal "Team_1", @games_teams.all_team_games_in_preseason(arg, "Preseason")
+  end
+
+  def test_it_can_list_all_teams_games_in_postseason
+    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    assert_equal "Team_2", @games_teams.all_team_games_in_preseason(arg, "Postseason")
+  end
+
+  def test_it_can_count_all_teams_wins_in_preseason
+    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    assert_equal 0, @games_teams.total_preseason_wins_of_team_in_season(arg, "Preseason")
+  end
+
+  def test_it_can_count_all_teams_wins_in_postseason
+    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
+    assert_equal 0, @games_teams.total_postseason_wins_of_team_in_season(arg, "Postseason")
+  end
 end
