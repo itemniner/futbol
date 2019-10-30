@@ -371,4 +371,9 @@ class GamesTeamsCollectionTest < Minitest::Test
     game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
     assert_equal "16", @games_teams_collection.most_accurate_team(game_ids)
   end
+
+  def test_it_can_find_team_with_lowest_goals_to_shots_percentage_aka_most_accurate_team
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal "30", @games_teams_collection.least_accurate_team(game_ids)
+  end
 end
