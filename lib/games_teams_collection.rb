@@ -330,4 +330,28 @@ class GamesTeamsCollection
       total_team_tackles_in_season(team_id, game_ids)
     end
   end
+
+  def total_shots_taken_by_team_in_season(team_id, game_ids)
+    all_games_of_team_in_season(team_id, game_ids).sum { |game_team| game_team.shots.to_i }
+  end
+
+  def total_goals_of_team_in_season(team_id, game_ids)
+    all_games_of_team_in_season(team_id, game_ids).sum { |game_team| game_team.goals.to_i }
+  end
+
+  def percentage_of_goals_to_shots_by_team(team_id, game_ids)
+    percent_of(total_goals_of_team_in_season(team_id, game_ids), total_shots_taken_by_team_in_season(team_id, game_ids))
+  end
+
+  def most_accurate_team(game_ids)
+    unique_teams_in_season(game_ids).max_by do |team_id|
+      percentage_of_goals_to_shots_by_team(team_id, game_ids)
+    end
+  end
+
+  def least_accurate_team(game_ids)
+    unique_teams_in_season(game_ids).min_by do |team_id|
+      percentage_of_goals_to_shots_by_team(team_id, game_ids)
+    end
+  end
 end
