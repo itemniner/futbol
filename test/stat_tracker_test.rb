@@ -1,8 +1,13 @@
 require_relative 'test_helper'
 require_relative '../lib/stat_tracker'
+require './module/uniqable'
+require './module/totalable'
 
 
 class StatTrackerTest < Minitest::Test
+  include Uniqable
+  include Totalable
+  
   def setup
     file_paths = {
                   games: './data/dummy_games.csv',

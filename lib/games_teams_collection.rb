@@ -1,9 +1,11 @@
 require_relative 'game_team'
 require 'csv'
 require './module/uniqable'
+require './module/totalable'
 
 class GamesTeamsCollection
   include Uniqable
+  include Totalable
   attr_reader :games_teams
 
   def initialize(games_teams_path)
@@ -98,35 +100,35 @@ class GamesTeamsCollection
 
   "----------------------------SUPPORT_METHODS----------------------------------"
 
-  def total_home_games
-    @games_teams.count do |game_team|
-      game_team.hoa == 'home'
-    end
-  end
+  # def total_home_games
+  #   @games_teams.count do |game_team|
+  #     game_team.hoa == 'home'
+  #   end
+  # end
 
-  def total_home_wins
-    @games_teams.count do |game_team|
-      game_team.hoa == 'home' && game_team.result == 'WIN'
-    end
-  end
-
-  def total_away_games
-    @games_teams.count do |game_team|
-      game_team.hoa == 'away'
-    end
-  end
-
-  def total_away_wins
-    @games_teams.count do |game_team|
-      game_team.hoa == 'away' && game_team.result == 'WIN'
-    end
-  end
-
-  def total_ties
-    @games_teams.count do |game_team|
-      game_team.result == 'TIE'
-    end
-  end
+  # def total_home_wins
+  #   @games_teams.count do |game_team|
+  #     game_team.hoa == 'home' && game_team.result == 'WIN'
+  #   end
+  # end
+  #
+  # def total_away_games
+  #   @games_teams.count do |game_team|
+  #     game_team.hoa == 'away'
+  #   end
+  # end
+  #
+  # def total_away_wins
+  #   @games_teams.count do |game_team|
+  #     game_team.hoa == 'away' && game_team.result == 'WIN'
+  #   end
+  # end
+  #
+  # def total_ties
+  #   @games_teams.count do |game_team|
+  #     game_team.result == 'TIE'
+  #   end
+  # end
 
   def number_of_wins
     winner_goals = []
@@ -152,21 +154,21 @@ class GamesTeamsCollection
     collection.find_all { |member| member.send(attribute) == element }
   end
 
-  def total_found_by_in(element, attribute, collection)
-    find_by_in(element, attribute, collection).length
-  end
+  # def total_found_by_in(element, attribute, collection)
+  #   find_by_in(element, attribute, collection).length
+  # end
 
   def games_with_team(team_id)
     find_by_in(team_id, "team_id", @games_teams)
   end
 
-  def total_games_with_team(team_id)
-    total_found_by_in(team_id, "team_id", @games_teams)
-  end
-
-  def total_wins_of_team(team_id)
-    games_with_team(team_id).count { |game_team| game_team.result == "WIN" }
-  end
+  # def total_games_with_team(team_id)
+  #   total_found_by_in(team_id, "team_id", @games_teams)
+  # end
+  #
+  # def total_wins_of_team(team_id)
+  #   games_with_team(team_id).count { |game_team| game_team.result == "WIN" }
+  # end
 
   def percent_of(numerator, denominator)
     ((numerator / (denominator.to_f.nonzero? || 1)) * 100).round(2)
@@ -212,9 +214,9 @@ class GamesTeamsCollection
     find_by_in(team_id, "team_id", @games_teams)
   end
 
-  def total_goals_of_team(team_id)
-    list_of_games_of_team(team_id).sum { |game_team| game_team.goals.to_i }
-  end
+  # def total_goals_of_team(team_id)
+  #   list_of_games_of_team(team_id).sum { |game_team| game_team.goals.to_i }
+  # end
 
   def average_goals_for_team(team_id)
     (total_goals_of_team(team_id) / total_games_with_team(team_id).to_f).round(2)
@@ -232,9 +234,9 @@ class GamesTeamsCollection
     end
   end
 
-  def total_goals_of_opponents(team_id)
-    all_opponent_games(team_id).sum { |game_team| game_team.goals.to_i }
-  end
+  # def total_goals_of_opponents(team_id)
+  #   all_opponent_games(team_id).sum { |game_team| game_team.goals.to_i }
+  # end
 
   def average_goals_of_opponents(team_id)
     (total_goals_of_opponents(team_id) / all_opponent_games(team_id).length.to_f).round(2)
@@ -256,9 +258,9 @@ class GamesTeamsCollection
     every_unique("team_id", all_opponent_games(team_id))
   end
 
-  def total_shots_taken_by_team(team_id)
-    list_of_games_of_team(team_id).sum { |game_team| game_team.shots.to_i }
-  end
+  # def total_shots_taken_by_team(team_id)
+  #   list_of_games_of_team(team_id).sum { |game_team| game_team.shots.to_i }
+  # end
 
   def percentage_of_goals_to_shots_by_team(team_id)
     total = (total_goals_of_team(team_id) / total_shots_taken_by_team(team_id).to_f)
@@ -269,15 +271,15 @@ class GamesTeamsCollection
     all_games_with_ids(game_ids).find_all { |game_team| game_team.head_coach == coach }
   end
 
-  def total_wins_of_coach_in_season(coach, game_ids)
-    all_coach_games_in_season(coach, game_ids).count do |game|
-      game.result == "WIN"
-    end
-  end
-
-  def total_coach_games_in_season(coach, game_ids)
-    all_coach_games_in_season(coach, game_ids).length
-  end
+  # def total_wins_of_coach_in_season(coach, game_ids)
+  #   all_coach_games_in_season(coach, game_ids).count do |game|
+  #     game.result == "WIN"
+  #   end
+  # end
+  #
+  # def total_coach_games_in_season(coach, game_ids)
+  #   all_coach_games_in_season(coach, game_ids).length
+  # end
 
   def coach_win_percent_in_season(coach, game_ids)
     (total_wins_of_coach_in_season(coach, game_ids) / total_coach_games_in_season(coach, game_ids).to_f).round(2)
@@ -305,11 +307,11 @@ class GamesTeamsCollection
     end
   end
 
-  def total_team_tackles_in_season(team_id, game_ids)
-    all_games_of_team_in_season(team_id, game_ids).sum do |game|
-      game.tackles.to_i
-    end
-  end
+  # def total_team_tackles_in_season(team_id, game_ids)
+  #   all_games_of_team_in_season(team_id, game_ids).sum do |game|
+  #     game.tackles.to_i
+  #   end
+  # end
 
   # def unique_teams_in_season(game_ids)
   #   all_games_with_ids(game_ids).map do |game|

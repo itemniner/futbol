@@ -2,8 +2,12 @@ require_relative 'games_collection'
 require_relative 'teams_collection'
 require_relative 'games_teams_collection'
 require 'csv'
+require './module/uniqable'
+require './module/totalable'
 
 class StatTracker
+  include Uniqable
+  include Totalable
   attr_reader :games, :teams, :games_teams
 
   def initialize(file_paths)

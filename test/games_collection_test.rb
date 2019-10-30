@@ -1,4 +1,5 @@
 require_relative 'test_helper'
+
 class GamesCollectionTest < Minitest::Test
 
   def setup
