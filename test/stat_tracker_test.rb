@@ -240,6 +240,27 @@ class StatTrackerTest < Minitest::Test
     assert_equal expected_hash, @stat_tracker.head_to_head("5")
   end
 
+  #
+  # def test_it_can_find_all_games_given_season_and_team_id
+  #   assert_equal 0, @stat_tracker.all_games_given_season_and_team_id("20122013")
+  # end
+
+  def test_it_can_find_total_shots_taken_by_team
+    assert_equal 0, @stat_tracker.total_shots_taken_by_team("3", "20122013")
+  end
+
+  def test_it_can_get_all_games_in_games_teams_given_season
+    assert_equal 98, @stat_tracker.all_game_given_the_season("20122013").length
+  end
+
+  def test_it_can_find_most_accurate_team
+    assert_equal "New York City FC", @stat_tracker.most_accurate_team("20122013")
+  end
+
+  def test_it_can_find_least_accurate_team
+    assert_equal "Houston Dynamo", @stat_tracker.least_accurate_team("20122013")
+  end
+
   def test_it_can_find_winningest_coach_in_season
     game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
     @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
