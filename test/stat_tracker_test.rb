@@ -270,20 +270,12 @@ class StatTrackerTest < Minitest::Test
     assert_equal "John Tortorella", @stat_tracker.worst_coach("20122013")
   end
 
-  ##### in progress
   def test_it_can_tell_us_biggest_bust_in_season
-    skip
-    game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
-    assert_equal "Team_1", @stat_tracker.biggest_bust("20122013")
+    assert_equal "Houston Dynamo", @stat_tracker.biggest_bust("20132014")
   end
 
-  ##### in progress
   def test_it_can_tell_us_biggest_surprise_in_season
-    skip
-    game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
-    assert_equal "Team_2", @stat_tracker.biggest_surprise("20122013")
+    assert_equal "New England Revolution", @stat_tracker.biggest_surprise("20132014")
   end
 
   def test_it_can_name_of_team_with_most_tackles_in_season
