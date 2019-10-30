@@ -349,4 +349,10 @@ class GamesTeamsCollection
       percentage_of_goals_to_shots_by_team(team_id, game_ids)
     end
   end
+
+  def least_accurate_team(game_ids)
+    unique_teams_in_season(game_ids).min_by do |team_id|
+      percentage_of_goals_to_shots_by_team(team_id, game_ids)
+    end
+  end
 end
