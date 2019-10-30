@@ -343,4 +343,10 @@ class GamesTeamsCollection
   def percentage_of_goals_to_shots_by_team(team_id, game_ids)
     percent_of(total_goals_of_team_in_season(team_id, game_ids), total_shots_taken_by_team_in_season(team_id, game_ids))
   end
+
+  def most_accurate_team(game_ids)
+    unique_teams_in_season(game_ids).max_by do |team_id|
+      percentage_of_goals_to_shots_by_team(team_id, game_ids)
+    end
+  end
 end
