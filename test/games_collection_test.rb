@@ -507,4 +507,21 @@ class GamesCollectionTest < Minitest::Test
     assert_equal :regular_season, @games_collection.type_to_symbol("Regular Season")
     assert_equal :postseason, @games_collection.type_to_symbol("Postseason")
   end
+
+  def test_it_can_find_difference_between_win_percentage_in_season_types_for_team
+    assert_equal -0.20, @games_collection.team_difference_in_win_percentage_by_season("8", "20122013")
+  end
+
+  def test_it_can_find_all_unique_teams_in_given_season
+    expected = ["16", "8", "10", "18", "19", "29", "1", "3", "25", "52"].sort
+    assert_equal expected, @games_collection.all_unique_teams_in_season("20132014").sort
+  end
+
+  def test_it_can_find_all_teams_with_decrease_from_regular_to_postseason_in_season
+    assert_equal ["16", "26", "15", "25"], @games_collection.teams_with_season_decrease("20122013")
+  end
+
+  def test_it_can_find_team_with_biggest_difference_in_win_percent_between_types_in_season
+    assert_equal "19", @games_collection.biggest_bust("20132014")
+  end
 end
