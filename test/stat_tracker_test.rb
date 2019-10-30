@@ -33,19 +33,19 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_it_has_a_big_blow_out
-    assert_equal 4, @stat_tracker.biggest_blowout
+    assert_equal 5, @stat_tracker.biggest_blowout
   end
 
   def test_it_calculates_home_win_percentage_to_the_hundredths
-    assert_equal 0.65, @stat_tracker.percentage_home_wins
+    assert_equal 0.53, @stat_tracker.percentage_home_wins
   end
 
   def test_it_calculates_away_win_percentage_to_the_hundredths
-    assert_equal 0.33, @stat_tracker.percentage_visitor_wins
+    assert_equal 0.41, @stat_tracker.percentage_visitor_wins
   end
 
   def test_it_calculates_percentage_ties
-    assert_equal 0.02, @stat_tracker.percentage_ties
+    assert_equal 0.06, @stat_tracker.percentage_ties
   end
 
   def test_it_can_count_game_by_season
@@ -106,7 +106,7 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_it_can_find_team_with_best_fans
-    assert_equal "New England Revolution", @stat_tracker.best_fans
+    assert_equal "Chicago Red Stars", @stat_tracker.best_fans
   end
 
   def test_it_can_return_team_info_hash
@@ -121,24 +121,23 @@ class StatTrackerTest < Minitest::Test
   end
 
   def test_it_can_find_names_of_teams_with_worst_fans
-    # no such teams exist in fixture data, but 2 exist in real data
-    assert_equal [], @stat_tracker.worst_fans
+    assert_equal ["DC United", "Los Angeles FC", "Orlando Pride", "Portland Thorns FC"], @stat_tracker.worst_fans
   end
 
   def test_it_can_find_team_with_best_offense
-    assert_equal "New York City FC", @stat_tracker.best_offense
+    assert_equal "Chicago Red Stars", @stat_tracker.best_offense
   end
 
   def test_it_can_find_team_with_worst_offense
-    assert_equal "Orlando City SC", @stat_tracker.worst_offense
+    assert_equal "Chicago Fire", @stat_tracker.worst_offense
   end
 
   def test_it_can_find_team_with_best_defense
-    assert_equal "FC Dallas", @stat_tracker.best_defense
+    assert_equal "Orlando Pride", @stat_tracker.best_defense
   end
 
   def test_it_can_find_team_with_worst_defense
-    assert_equal "New York Red Bulls", @stat_tracker.worst_defense
+    assert_equal "Minnesota United FC", @stat_tracker.worst_defense
   end
 
   def test_it_has_a_biggest_team_blowout
@@ -240,25 +239,23 @@ class StatTrackerTest < Minitest::Test
     assert_equal expected_hash, @stat_tracker.head_to_head("5")
   end
 
-  #
-  # def test_it_can_find_all_games_given_season_and_team_id
-  #   assert_equal 0, @stat_tracker.all_games_given_season_and_team_id("20122013")
-  # end
-
   def test_it_can_find_total_shots_taken_by_team
+    skip
     assert_equal 0, @stat_tracker.total_shots_taken_by_team("3", "20122013")
   end
 
   def test_it_can_get_all_games_in_games_teams_given_season
-    assert_equal 98, @stat_tracker.all_game_given_the_season("20122013").length
+    assert_equal 126, @stat_tracker.all_game_given_the_season("20122013").length
   end
 
   def test_it_can_find_most_accurate_team
+    skip
     assert_equal "New York City FC", @stat_tracker.most_accurate_team("20122013")
   end
 
   def test_it_can_find_least_accurate_team
-    assert_equal "Houston Dynamo", @stat_tracker.least_accurate_team("20122013")
+    skip
+    assert_equal "Montreal Impact", @stat_tracker.least_accurate_team("20122013")
   end
 
   def test_it_can_find_winningest_coach_in_season
@@ -272,16 +269,32 @@ class StatTrackerTest < Minitest::Test
     @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
     assert_equal "John Tortorella", @stat_tracker.worst_coach("20122013")
   end
+
   ##### in progress
   def test_it_can_tell_us_biggest_bust_in_season
+    skip
     game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
     @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
     assert_equal "Team_1", @stat_tracker.biggest_bust("20122013")
   end
+
   ##### in progress
   def test_it_can_tell_us_biggest_surprise_in_season
+    skip
     game_ids = ["2012030131", "2012030132", "2012030133", "2012030134"]
     @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
     assert_equal "Team_2", @stat_tracker.biggest_surprise("20122013")
+  end
+
+  def test_it_can_name_of_team_with_most_tackles_in_season
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    assert_equal "Orlando City SC", @stat_tracker.most_tackles("20122013")
+  end
+
+  def test_it_can_name_of_team_with_fewest_tackles_in_season
+    game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    @stat_tracker.games.expects(:game_ids_in_season).returns(game_ids)
+    assert_equal "New England Revolution", @stat_tracker.fewest_tackles("20122013")
   end
 end

@@ -11,56 +11,72 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_initializes_attributes
-    assert_equal 98, @games_teams_collection.games_teams.length
+    assert_equal 222, @games_teams_collection.games_teams.length
     assert_equal true, @games_teams_collection.games_teams.all? {|game_team| game_team.is_a?(GameTeam)}
   end
 
   def test_it_can_get_total_home_games
-    assert_equal 49, @games_teams_collection.total_home_games
+    assert_equal 111, @games_teams_collection.total_home_games
   end
 
   def test_it_can_get_home_wins
-    assert_equal 32, @games_teams_collection.total_home_wins
+    assert_equal 59, @games_teams_collection.total_home_wins
   end
 
   def test_it_calculates_home_win_percentage_to_the_hundredths
-    assert_equal 0.65, @games_teams_collection.percentage_home_wins
+    assert_equal 0.53, @games_teams_collection.percentage_home_wins
   end
 
   def test_it_can_see_how_many_wins
-    expected = [3, 3, 2, 3, 3, 3, 4, 2, 1, 2, 2, 3, 2, 2, 3, 2, 3, 4, 3, 4, 2, 3, 3, 3,
-                3, 2, 2, 1, 3, 3, 2, 3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 4, 2, 3, 3, 1, 3, 3]
+    expected = [3, 3, 2, 3, 3, 3, 4, 2, 1, 2, 2,
+                3, 2, 2, 3, 2, 3, 4, 3, 4,
+                2, 3, 3, 3, 3, 2, 2, 1, 3, 3, 2,
+                3, 3, 2, 3, 3, 3, 3, 3, 3, 3, 4,
+                2, 3, 3, 1, 3, 3, 2, 1, 3, 2, 3,
+                3, 3, 3, 3, 3, 3, 2, 3, 3, 2, 2,
+                2, 3, 3, 3, 4, 3, 2, 2, 3, 4, 3,
+                3, 2, 3, 3, 3, 2, 2, 4, 2, 2, 1,
+                2, 3, 2, 2, 2, 2, 4, 4, 3, 2, 3,
+                2, 3, 3, 3, 5, 4, 3]
     assert_equal expected, @games_teams_collection.number_of_wins
   end
 
   def test_it_can_see_how_many_losses
-    expected = [2, 2, 1, 2, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 2, 1, 1, 1, 2, 1, 1, 2, 2, 0,
-                1, 1, 1, 0, 2, 2, 1, 1, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2, 0, 2, 1, 0, 2, 2]
+    expected = [2, 2, 1, 2, 1, 0, 1, 1, 0, 1,
+                1, 1, 0, 1, 2, 1, 1, 1, 2, 1, 1,
+                2, 2, 0, 1, 1, 1, 0, 2, 2, 1,
+                1, 2, 0, 2, 2, 2, 2, 0, 2, 2, 2,
+                0, 2, 1, 0, 2, 2, 1, 0, 0, 1,
+                1, 2, 2, 2, 2, 2, 1, 1, 2, 2, 1,
+                1, 0, 2, 1, 0, 3, 2, 1, 1, 2,
+                3, 2, 2, 0, 2, 2, 1, 0, 1, 1, 1,
+                0, 0, 1, 2, 1, 1, 1, 1, 2, 3,
+                1, 0, 1, 1, 2, 2, 2, 3, 2, 1]
     assert_equal expected, @games_teams_collection.number_of_losses
   end
 
   def test_it_has_a_big_blow_out
-    assert_equal 4, @games_teams_collection.biggest_blowout
+    assert_equal 5, @games_teams_collection.biggest_blowout
   end
 
   def test_it_can_get_total_away_games
-    assert_equal 49, @games_teams_collection.total_away_games
+    assert_equal 111, @games_teams_collection.total_away_games
   end
 
   def test_it_can_get_away_wins
-    assert_equal 16, @games_teams_collection.total_away_wins
+    assert_equal 45, @games_teams_collection.total_away_wins
   end
 
   def test_it_calculates_away_win_percentage_to_the_hundredths
-    assert_equal 0.33, @games_teams_collection.percentage_visitor_wins
+    assert_equal 0.41, @games_teams_collection.percentage_visitor_wins
   end
 
   def test_it_can_get_total_ties
-    assert_equal 2, @games_teams_collection.total_ties
+    assert_equal 14, @games_teams_collection.total_ties
   end
 
   def test_it_calculates_percentage_ties
-    assert_equal 0.02, @games_teams_collection.percentage_ties
+    assert_equal 0.06, @games_teams_collection.percentage_ties
   end
 
   def test_it_can_find_rows_by_given_value_in_given_column
@@ -96,7 +112,9 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_all_team_ids
-    expected_array = ["2", "3", "5", "6", "8", "9", "15", "16", "17", "19", "24", "26", "30"].sort
+    expected_array = ["1", "10", "14", "15", "16", "17", "18", "19",
+                      "2", "20", "22", "23", "24", "25", "26", "28", "29",
+                      "3", "30", "4", "5", "52", "6", "7", "8", "9"].sort
     assert_equal expected_array, @games_teams_collection.all_team_ids.sort
   end
 
@@ -125,12 +143,12 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_finds_team_with_biggest_diff_btw_home_and_away_percent_aka_best_fans
-    assert_equal "16", @games_teams_collection.best_fans
+    assert_equal "25", @games_teams_collection.best_fans
     refute_equal "2", @games_teams_collection.best_fans
   end
 
   def test_it_can_find_teams_with_higher_away_win_percentages_aka_worst_fans
-    assert_equal [], @games_teams_collection.worst_fans # none in fixture data
+    assert_equal ["14", "28", "29", "52"], @games_teams_collection.worst_fans # none in fixture data
   end
 
   def test_it_can_get_all_games_of_a_given_team
@@ -148,11 +166,11 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_team_with_best_offense
-    assert_equal "9", @games_teams_collection.best_offense
+    assert_equal "25", @games_teams_collection.best_offense
   end
 
   def test_it_can_find_team_with_worst_offense
-    assert_equal "30", @games_teams_collection.worst_offense
+    assert_equal "4", @games_teams_collection.worst_offense
   end
 
   def test_it_can_find_opponent_game_team_object_given_game_team_object
@@ -180,11 +198,11 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_team_with_best_defense
-    assert_equal "6", @games_teams_collection.best_defense
+    assert_equal "29", @games_teams_collection.best_defense
   end
 
   def test_it_can_find_team_with_worst_defense
-    assert_equal "8", @games_teams_collection.worst_defense
+    assert_equal "18", @games_teams_collection.worst_defense
   end
 
   def test_it_can_find_team_goals
@@ -240,9 +258,10 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_percentage_of_goals_to_shots_by_team
+    skip
     assert_equal 32.58, @games_teams_collection.percentage_of_goals_to_shots_by_team("6")
   end
-  
+
   def test_it_can_get_all_games_with_a_given_coach_in_given_ids
     expected_array = [
       @games_teams_collection.games_teams[91],
@@ -310,23 +329,38 @@ class GamesTeamsCollectionTest < Minitest::Test
     assert_equal "John Tortorella", @games_teams_collection.worst_coach(arg)
   end
 
-  def test_it_can_list_all_teams_games_in_preseason
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal "Team_1", @games_teams.all_team_games_in_preseason(arg, "Preseason")
+  def test_in_can_find_all_games_for_given_team_in_given_season
+    arg = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    expected = [
+      @games_teams_collection.games_teams[42],
+      @games_teams_collection.games_teams[44],
+      @games_teams_collection.games_teams[47],
+      @games_teams_collection.games_teams[49],
+      @games_teams_collection.games_teams[50]
+    ]
+    assert_equal expected, @games_teams_collection.all_games_of_team_in_season("30", arg).sort_by { |game| game.game_id }
   end
 
-  def test_it_can_list_all_teams_games_in_postseason
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal "Team_2", @games_teams.all_team_games_in_preseason(arg, "Postseason")
+  def test_it_can_total_tackles_for_given_team_in_given_season
+    arg = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal 165, @games_teams_collection.total_team_tackles_in_season("30", arg)
   end
 
-  def test_it_can_count_all_teams_wins_in_preseason
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal 0, @games_teams.total_preseason_wins_of_team_in_season(arg, "Preseason")
+  def test_it_can_find_all_unique_teams_in_a_season
+    arg = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal ["30", "16"], @games_teams_collection.unique_teams_in_season(arg)
   end
 
-  def test_it_can_count_all_teams_wins_in_postseason
-    arg = ["2012030131", "2012030132", "2012030133", "2012030134"]
-    assert_equal 0, @games_teams.total_postseason_wins_of_team_in_season(arg, "Postseason")
+  def test_it_can_find_team_with_most_tackles_in_a_season
+    arg = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal "30", @games_teams_collection.most_tackles(arg)
   end
+
+  def test_it_can_find_team_with_fewest_tackles_in_a_season
+    arg = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
+    assert_equal "16", @games_teams_collection.fewest_tackles(arg)
+  end
+
+  # Next step for biggest_bust and biggest_surprise: 2 arguments to pass in
+  # separate preseason & reg_season game_id arrays from Games via StatTracker
 end
