@@ -191,4 +191,8 @@ class StatTracker
   def biggest_surprise(season)
     name_of_team(@games_teams.biggest_surprise(@games.game_ids_in_season_and_type(season, "Regular Season"),@games.game_ids_in_season_and_type(season, "Postseason")))
   end
+
+  def most_tackles(season)
+    name_of_team(@games_teams.most_tackles(@games.game_ids_in_season(season)))
+  end
 end
