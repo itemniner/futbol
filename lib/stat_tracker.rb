@@ -1,17 +1,4 @@
-require_relative 'games_collection'
-require_relative 'teams_collection'
-require_relative 'games_teams_collection'
-require 'csv'
-require_relative '../module/uniqable'
-require_relative '../module/totalable'
-require_relative '../module/calculatable'
-require_relative '../module/findable'
-
 class StatTracker
-  include Uniqable
-  include Totalable
-  include Calculatable
-  include Findable
   attr_reader :games, :teams, :games_teams
 
   def initialize(file_paths)
@@ -64,7 +51,6 @@ class StatTracker
     @teams.count_of_teams
   end
 
-  # Helper method
   def name_of_team(team_id)
     @teams.name_of_team_by_id(team_id)
   end
@@ -158,10 +144,7 @@ class StatTracker
   end
 
   def name_team_keys(team_hash)
-    team_hash.reduce({}) do |hash, pair|
-      hash[name_of_team(pair[0])] = pair[1]
-      hash
-    end
+    team_hash.reduce({}) { |hash, pair| hash[name_of_team(pair[0])] = pair[1]; hash }
   end
 
   def head_to_head(team_id)
