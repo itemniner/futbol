@@ -1,4 +1,11 @@
+require_relative '../module/statable'
+require_relative 'games_collection'
+require_relative 'games_teams_collection'
+require_relative 'teams_collection'
+
+
 class StatTracker
+  include Statable
   attr_reader :games, :teams, :games_teams
 
   def initialize(file_paths)
@@ -9,50 +16,6 @@ class StatTracker
 
   def self.from_csv(file_paths)
     self.new(file_paths)
-  end
-
-  def highest_total_score
-    @games.highest_total_score
-  end
-
-  def lowest_total_score
-    @games.lowest_total_score
-  end
-
-  def biggest_blowout
-    @games_teams.biggest_blowout
-  end
-
-  def percentage_home_wins
-    @games_teams.percentage_home_wins
-  end
-
-  def percentage_visitor_wins
-    @games_teams.percentage_visitor_wins
-  end
-
-  def percentage_ties
-    @games_teams.percentage_ties
-  end
-
-  def count_of_games_by_season
-    @games.count_of_games_by_season
-  end
-
-  def average_goals_per_game
-    @games.average_goals_per_game
-  end
-
-  def average_goals_by_season
-    @games.average_goals_by_season
-  end
-
-  def count_of_teams
-    @teams.count_of_teams
-  end
-
-  def name_of_team(team_id)
-    @teams.name_of_team_by_id(team_id)
   end
 
   def highest_scoring_visitor
@@ -143,10 +106,6 @@ class StatTracker
     name_of_team(@games.rival(team_id))
   end
 
-  def name_team_keys(team_hash)
-    team_hash.reduce({}) { |hash, pair| hash[name_of_team(pair[0])] = pair[1]; hash }
-  end
-
   def head_to_head(team_id)
     name_team_keys(@games.head_to_head(team_id))
   end
@@ -181,5 +140,13 @@ class StatTracker
 
   def fewest_tackles(season)
     name_of_team(@games_teams.fewest_tackles(@games.game_ids_in_season(season)))
+  end
+
+  def name_team_keys(team_hash)
+    team_hash.reduce({}) { |hash, pair| hash[name_of_team(pair[0])] = pair[1]; hash }
+  end
+
+  def name_of_team(team_id)
+    @teams.name_of_team_by_id(team_id)
   end
 end
