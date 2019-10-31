@@ -2,10 +2,14 @@ require_relative 'game_team'
 require 'csv'
 require_relative '../module/uniqable'
 require_relative '../module/totalable'
+require_relative '../module/calculatable'
+require_relative '../module/findable'
 
 class GamesTeamsCollection
   include Uniqable
   include Totalable
+  include Calculatable
+  include Findable
   attr_reader :games_teams
 
   def initialize(games_teams_path)
@@ -98,141 +102,12 @@ class GamesTeamsCollection
     (total_ties.to_f / @games_teams.count).round(2)
   end
 
-  "----------------------------SUPPORT_METHODS----------------------------------"
-
-  def number_of_wins
-    winner_goals = []
-    @games_teams.each do |game_team|
-      if game_team.result == "WIN"
-        winner_goals << game_team.goals.to_i
-      end
-    end
-    winner_goals
-  end
-
-  def number_of_losses
-    losser_goals = []
-    @games_teams.each do |game_team|
-      if game_team.result == "LOSS"
-        losser_goals << game_team.goals.to_i
-      end
-    end
-    losser_goals
-  end
-
-  def find_by_in(element, attribute, collection)
-    collection.find_all { |member| member.send(attribute) == element }
-  end
-
-  def games_with_team(team_id)
-    find_by_in(team_id, "team_id", @games_teams)
-  end
-
-  def percent_of(numerator, denominator)
-    ((numerator / (denominator.to_f.nonzero? || 1)) * 100).round(2)
-  end
-
-  def team_win_percentage(team_id)
-    percent_of(total_wins_of_team(team_id), total_games_with_team(team_id))
-  end
-
-  def every(attribute, collection)
-    collection.map { |element| element.send(attribute) }
-  end
-
-  def all_team_ids
-    every_unique("team_id", @games_teams)
-  end
-
-  def away_games_of_team(team_id)
-    find_by_in(team_id, "team_id", find_by_in("away", "hoa", @games_teams))
-  end
-
-  def home_games_of_team(team_id)
-    find_by_in(team_id, "team_id", find_by_in("home", "hoa", @games_teams))
-  end
-
-  def number_of_wins_in(collection)
-    collection.count { |game_team| game_team.result == "WIN" }
-  end
-
-  def team_home_win_percentage(team_id)
-    percent_of(number_of_wins_in(home_games_of_team(team_id)), home_games_of_team(team_id).length)
-  end
-
-  def team_away_win_percentage(team_id)
-    percent_of(number_of_wins_in(away_games_of_team(team_id)), home_games_of_team(team_id).length)
-  end
-
-  def list_of_games_of_team(team_id) # see 101 line
-    find_by_in(team_id, "team_id", @games_teams)
-  end
-
-  def average_goals_for_team(team_id)
-    (total_goals_of_team(team_id) / total_games_with_team(team_id).to_f).round(2)
-  end
-
-  def opponent_object(game_team_selected)
-    @games_teams.find do |game_team|
-      game_team.game_id == game_team_selected.game_id && game_team.hoa != game_team_selected.hoa
-    end
-  end
-
-  def all_opponent_games(team_id)
-    list_of_games_of_team(team_id).map do |game_team|
-      opponent_object(game_team)
-    end
-  end
-
-  def average_goals_of_opponents(team_id)
-    (total_goals_of_opponents(team_id) / all_opponent_games(team_id).length.to_f).round(2)
-  end
-
-  def team_goals(team_id)
-    all_opponent_games(team_id).map { |game_team| game_team.goals.to_i }
-  end
-
-  def opponents_goals(team_id)
-    list_of_games_of_team(team_id).map { |team_game| team_game.goals.to_i }
-  end
-
-  def all_games_with_ids(game_ids)
-    @games_teams.find_all { |game_team| game_ids.include?(game_team.game_id) }
-  end
-
-  def opponents_team_id(team_id)
-    every_unique("team_id", all_opponent_games(team_id))
-  end
-
-  def percentage_of_goals_to_shots_by_team(team_id)
-    total = (total_goals_of_team(team_id) / total_shots_taken_by_team(team_id).to_f)
-    (total * 100).round(2)
-  end
-
-  def all_coach_games_in_season(coach, game_ids)
-    all_games_with_ids(game_ids).find_all { |game_team| game_team.head_coach == coach }
-  end
-
-  def coach_win_percent_in_season(coach, game_ids)
-    (total_wins_of_coach_in_season(coach, game_ids) / total_coach_games_in_season(coach, game_ids).to_f).round(2)
-  end
-
   def winningest_coach(game_ids)
     unique_coaches_in_season(game_ids).max_by { |coach| coach_win_percent_in_season(coach, game_ids) }
   end
 
   def worst_coach(game_ids)
     unique_coaches_in_season(game_ids).min_by { |coach| coach_win_percent_in_season(coach, game_ids) }
-  end
-
-  def all_team_ids
-    every_unique("team_id", @games_teams)
-  end
-
-  def all_games_of_team_in_season(team_id, game_ids)
-    all_games_with_ids(game_ids).select do |game|
-      game.team_id == team_id
-    end
   end
 
   def most_tackles(game_ids)
@@ -247,27 +122,15 @@ class GamesTeamsCollection
     end
   end
 
-  def total_shots_taken_by_team_in_season(team_id, game_ids)
-    all_games_of_team_in_season(team_id, game_ids).sum { |game_team| game_team.shots.to_i }
-  end
-
-  def total_goals_of_team_in_season(team_id, game_ids)
-    all_games_of_team_in_season(team_id, game_ids).sum { |game_team| game_team.goals.to_i }
-  end
-
-  def percentage_of_goals_to_shots_by_team(team_id, game_ids)
-    percent_of(total_goals_of_team_in_season(team_id, game_ids), total_shots_taken_by_team_in_season(team_id, game_ids))
-  end
-
   def most_accurate_team(game_ids)
     unique_teams_in_season(game_ids).max_by do |team_id|
-      percentage_of_goals_to_shots_by_team(team_id, game_ids)
+      percentage_of_goals_to_shots_by_team_in_season(team_id, game_ids)
     end
   end
 
   def least_accurate_team(game_ids)
     unique_teams_in_season(game_ids).min_by do |team_id|
-      percentage_of_goals_to_shots_by_team(team_id, game_ids)
+      percentage_of_goals_to_shots_by_team_in_season(team_id, game_ids)
     end
   end
 end

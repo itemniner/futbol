@@ -86,9 +86,9 @@ class GamesTeamsCollectionTest < Minitest::Test
   end
 
   def test_it_can_find_all_rows_with_given_team_id
-    assert_instance_of Array, @games_teams_collection.games_with_team("6")
-    assert_equal 9, @games_teams_collection.games_with_team("6").length
-    assert_equal true, @games_teams_collection.games_with_team("6").all? { |element| element.is_a?(GameTeam) }
+    assert_instance_of Array, @games_teams_collection.games_teams_with_team("6")
+    assert_equal 9, @games_teams_collection.games_teams_with_team("6").length
+    assert_equal true, @games_teams_collection.games_teams_with_team("6").all? { |element| element.is_a?(GameTeam) }
   end
 
   def test_it_totals_games_for_given_team
@@ -362,9 +362,9 @@ class GamesTeamsCollectionTest < Minitest::Test
     assert_equal 7, @games_teams_collection.total_goals_of_team_in_season("30", game_ids)
   end
 
-  def test_it_can_find_percentage_of_goals_to_shots_by_team
+  def test_it_can_find_percentage_of_goals_to_shots_by_team_in_given_season
     game_ids = ["2012030151", "2012030152", "2012030153", "2012030154", "2012030155"]
-    assert_equal 21.21, @games_teams_collection.percentage_of_goals_to_shots_by_team("30", game_ids)
+    assert_equal 21.21, @games_teams_collection.percentage_of_goals_to_shots_by_team_in_season("30", game_ids)
   end
 
   def test_it_can_find_team_with_highest_goals_to_shots_percentage_aka_most_accurate_team

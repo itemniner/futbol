@@ -2,10 +2,14 @@ require_relative 'game'
 require 'csv'
 require_relative '../module/uniqable'
 require_relative '../module/totalable'
+require_relative '../module/calculatable'
+require_relative '../module/findable'
 
 class GamesCollection
   include Uniqable
   include Totalable
+  include Calculatable
+  include Findable
   attr_reader :games
 
   def initialize(games_path)
@@ -73,13 +77,13 @@ class GamesCollection
 
   def best_season(team_id)
     team_seasons(team_id).max_by do |season|
-      team_win_percentage(team_id, season)
+      team_win_percentage_in_season(team_id, season)
     end
   end
 
   def worst_season(team_id)
     team_seasons(team_id).min_by do |season|
-      team_win_percentage(team_id, season)
+      team_win_percentage_in_season(team_id, season)
     end
   end
 
@@ -112,237 +116,11 @@ class GamesCollection
       season_info
     end
   end
-  "----------------------------------SUPPORT_METHODS------------------------------"
-  def number_of_games_in_each_season
-    seasons_of_games = @games.group_by {|game| game.season}
-    seasons_of_games.values.map {|value| value.length}
-  end
-
-  def every(attribute, collection)
-    collection.map { |element| element.send(attribute) }
-  end
-
-  def goals(game)
-    game.home_goals.to_i + game.away_goals.to_i
-  end
-
-  def average_goals_in(games)
-    (total_goals(games) / total_unique("game_id", games).to_f).round(2)
-  end
-
-  def all_games_in_season(season)
-    @games.select { |game| game.season == season }
-  end
-
-  def home_teams
-    every_unique("home_team_id", @games)
-  end
-
-  def find_by_in(element, attribute_str, collection)
-    collection.find_all { |member| member.send(attribute_str) == element }
-  end
-
-  def all_home_games_of_team(team_id)
-    find_by_in(team_id, "home_team_id", @games)
-  end
-
-  def total_home_games(team)
-    all_home_games_of_team(team).count
-  end
-
-  def average_home_score_of_team(team_id)
-    total_home_goals(team_id) / total_home_games(team_id).to_f
-  end
-
-  def away_teams
-    every_unique("away_team_id", @games)
-  end
-
-  def all_away_games_of_team(team_id)
-    find_by_in(team_id, "away_team_id", @games)
-  end
-
-  def average_away_score_of_team(team_id)
-    total_away_goals(team_id) / total_away_games_team(team_id).to_f
-  end
-
-  def games_with_team(team_id)
-    find_by_in(team_id, "home_team_id", @games) + find_by_in(team_id, "away_team_id", @games)
-  end
-
-  def games_with_team_in_season(team_id, season)
-    games_with_team(team_id).select do |game|
-      game.season == season
-    end
-  end
-
-  def away_win?(game)
-    game.away_goals > game.home_goals
-  end
-
-  def home_win?(game)
-    game.home_goals > game.away_goals
-  end
-
-  def away_games_in_season(team_id, season)
-    all_away_games_of_team(team_id).select do |game|
-      game.season == season
-    end
-  end
-
-  def home_games_in_season(team_id, season)
-    all_home_games_of_team(team_id).select do |game|
-      game.season == season
-    end
-  end
-
-  def team_win_percentage(team_id, season)
-    (total_team_wins(team_id, season) / games_with_team_in_season(team_id, season).length.to_f).round(2)
-  end
-
-  def team_seasons(team_id)
-    games_with_team(team_id).map do |game|
-      game.season
-    end.uniq
-  end
-
-  def team_games_in_season_and_type(team_id, season, type)
-    all_games_in_season_and_type(season, type).select do |game|
-      team_id == game.home_team_id || team_id == game.away_team_id
-    end
-  end
-
-  def team_wins_in_season_and_type(team_id, season, type)
-    team_games_in_season_and_type(team_id, season, type).count do |game|
-      team_id == game.home_team_id ? home_win?(game) : away_win?(game)
-    end
-  end
-
-  def team_games_denominator(team_id, season, type)
-    team_games_in_season_and_type(team_id, season, type).length.to_f.nonzero? || 1.0
-  end
-
-  def team_win_percentage_in_season_and_type(team_id, season, type)
-    (team_wins_in_season_and_type(team_id, season, type) / team_games_denominator(team_id, season, type)).round(2)
-  end
-
-  def avg_team_goals_in_season_and_type(team_id, season, type)
-    (total_team_goals_in_season_and_type(team_id, season, type) / team_games_denominator(team_id, season, type)).round(2)
-  end
-
-  def avg_opponent_goals_in_season_and_type(team_id, season, type)
-    (total_opponent_goals_in_season_and_type(team_id, season, type) / team_games_denominator(team_id, season, type)).round(2)
-  end
-
-  def season_sub_type_summary(team_id, season, type)
-    {
-      win_percentage: team_win_percentage_in_season_and_type(team_id, season, type),
-      total_goals_scored: total_team_goals_in_season_and_type(team_id, season, type),
-      total_goals_against: total_opponent_goals_in_season_and_type(team_id, season, type),
-      average_goals_scored: avg_team_goals_in_season_and_type(team_id, season, type),
-      average_goals_against: avg_opponent_goals_in_season_and_type(team_id, season, type)
-    }
-  end
-
-  def type_to_symbol(season_type)
-    season_type.gsub(/\s+/, "_").downcase.intern
-  end
 
   def season_summary(team_id, season)
     ["Regular Season", "Postseason"].reduce({}) do |season_summary, type|
       season_summary[type_to_symbol(type)] = season_sub_type_summary(team_id, season, type)
       season_summary
-    end
-  end
-
-  def find_opponents_goals_if_away_team(team_id)
-    games_with_team(team_id).sum do |game_team|
-      team_id == game_team.away_team_id ? game_team.home_goals.to_i : 0
-    end
-  end
-
-  def find_opponents_goals_if_home_team(team_id)
-    games_with_team(team_id).sum do |game_team|
-      team_id == game_team.home_team_id ? game_team.away_goals.to_i : 0
-    end
-  end
-
-  def average_goals_of_opponent(team_id)
-    total_opponent_goals(team_id) / games_with_team(team_id).length.to_f
-  end
-
-  def game_ids_in_season(season)
-    all_games_in_season(season).map { |game| game.game_id }
-  end
-
-  def all_games_in_season_and_type(season, type)
-    all_games_in_season(season).select { |game| game.type == type }
-  end
-
-  def game_ids_in_season_and_type(season, type)
-    all_games_in_season_and_type(season, type).map { |game| game.game_id }
-  end
-
-  def team_opponents(team_id)
-    games_with_team(team_id).map do |game|
-      team_id == game.away_team_id ? game.home_team_id : game.away_team_id
-    end.uniq
-  end
-
-  def games_between(team_id, team_opponent)
-    games_with_team(team_id).find_all do |game|
-      team_opponent == game.away_team_id || team_opponent == game.home_team_id
-    end
-  end
-
-  def win_percentage_against(team_id, team_opponent)
-    (total_wins_against(team_id, team_opponent) / total_games_between(team_id, team_opponent).to_f).round(2)
-  end
-
-  def favorite_opponent(team_id)
-    team_opponents(team_id).min_by do |team_opponent|
-      win_percentage_against(team_opponent, team_id)
-    end
-  end
-
-  def rival(team_id)
-    team_opponents(team_id).max_by do |team_opponent|
-      win_percentage_against(team_opponent, team_id)
-    end
-  end
-
-  def head_to_head(team_id)
-    team_opponents(team_id).reduce({}) do |record, team_opponent|
-      record[team_opponent] = win_percentage_against(team_id, team_opponent)
-      record
-    end
-  end
-
-  def team_difference_in_win_percentage_by_season(team_id, season)
-    regular_season = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
-    post_season = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
-    regular_season - post_season
-  end
-
-  def all_unique_teams_in_season(season)
-    home_ids = every_unique("home_team_id", all_games_in_season(season))
-    away_ids = every_unique("away_team_id", all_games_in_season(season))
-    (home_ids + away_ids).uniq
-  end
-
-  def teams_with_season_decrease(season)
-    all_unique_teams_in_season(season).find_all do |team_id|
-      reg_percent = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
-      post_percent = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
-      reg_percent > post_percent
-    end
-  end
-
-  def teams_with_season_increase(season)
-    all_unique_teams_in_season(season).find_all do |team_id|
-      reg_percent = team_win_percentage_in_season_and_type(team_id, season, "Regular Season")
-      post_percent = team_win_percentage_in_season_and_type(team_id, season, "Postseason")
-      reg_percent < post_percent
     end
   end
 
@@ -356,5 +134,9 @@ class GamesCollection
     teams_with_season_increase(season).max_by do |team_id|
       team_difference_in_win_percentage_by_season(team_id, season).abs
     end
+  end
+
+  def type_to_symbol(season_type)
+    season_type.gsub(/\s+/, "_").downcase.intern
   end
 end
